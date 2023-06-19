@@ -9,7 +9,7 @@ on:
 jobs:
   test-hardhat:
     name: TestHardhat
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Test hardhat
@@ -17,7 +17,7 @@ jobs:
 
   test-forge:
     name: TestForge
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Test forge
@@ -25,7 +25,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Lint
@@ -33,7 +33,7 @@ jobs:
 
   contracts-size:
     name: ContractsSize
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: ContractsSize
@@ -41,7 +41,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
       - test-hardhat
@@ -54,7 +54,7 @@ jobs:
 
   approve-test:
     name: Approve Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - build
     steps:
@@ -63,7 +63,7 @@ jobs:
 
   approve-prod:
     name: Approve Prod
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs:
       - build
     steps:
@@ -72,7 +72,7 @@ jobs:
 
   deploy-test:
     name: Deploy Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
       - approve-test
@@ -83,7 +83,7 @@ jobs:
 
   deploy-prod:
     name: Deploy Prod
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
       - approve-prod
@@ -94,7 +94,7 @@ jobs:
 
   set-version-test:
     name: Set Version Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
       - deploy-test
@@ -104,7 +104,7 @@ jobs:
 
   set-version-prod:
     name: Set Version Prod
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
       - deploy-prod
