@@ -80,6 +80,7 @@ jobs:
     timeout-minutes: 5
     needs:
       - deploy
+    environment: test
     steps:
       - name: SetVersion
         run: echo set version
