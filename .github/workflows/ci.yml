@@ -15,10 +15,59 @@ jobs:
       - name: Test hardhat
         run: echo Test hardhat
 
-  test-froge:
-    name: TestFroge
+  test-forge:
+    name: TestForge
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
       - name: Test forge
         run: echo Test forge
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - name: Lint
+        run: echo Lint
+
+  contracts-size:
+    name: ContractsSize
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - name: ContractsSize
+        run: echo Contracts size
+
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    needs:
+      - test-hardhat
+      - test-forge
+      - lint
+      - contracts-size
+    steps:
+      - name: Build
+        run: echo build
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    needs:
+      - build
+    steps:
+      - name: Deploy
+        run: echo deploy
+
+  set-version:
+    name: SetVersion
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    needs:
+      - deploy
+    steps:
+      - name: SetVersion
+        run: echo set version
