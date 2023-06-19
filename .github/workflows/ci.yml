@@ -1,0 +1,24 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test-hardhat:
+    name: TestHardhat
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+      - name: Test hardhat
+        run: echo Test hardhat
+
+  test-froge:
+    name: TestFroge
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+      - name: Test forge
+        run: echo Test forge
