@@ -52,35 +52,62 @@ jobs:
       - name: Build
         run: echo build
 
-  approve:
-    name: Approve
+  approve-test:
+    name: Approve Test
     runs-on: ubuntu-20.04
     needs:
       - build
-    environment: test
     steps:
       - name: manual approve
-        run: |
-            echo "Manually approved"
+        run: echo "Manually approved"
 
-  deploy:
-    name: Deploy
+  approve-prod:
+    name: Approve Prod
+    runs-on: ubuntu-20.04
+    needs:
+      - build
+    steps:
+      - name: manual approve
+        run: echo "Manually approved"
+
+  deploy-test:
+    name: Deploy Test
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     needs:
-      - approve
+      - approve-test
     environment: test
     steps:
       - name: Deploy
         run: echo deploy
 
-  set-version:
-    name: SetVersion
+  deploy-prod:
+    name: Deploy Prod
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    needs:
+      - approve-prod
+    environment: prod
+    steps:
+      - name: Deploy
+        run: echo deploy
+
+  set-version-test:
+    name: Set Version Test
     runs-on: ubuntu-20.04
     timeout-minutes: 5
     needs:
-      - deploy
-    environment: test
+      - deploy-test
+    steps:
+      - name: SetVersion
+        run: echo set version
+
+  set-version-prod:
+    name: Set Version Prod
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    needs:
+      - deploy-prod
     steps:
       - name: SetVersion
         run: echo set version
