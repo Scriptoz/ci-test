@@ -57,6 +57,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - build
+    environment: test
     steps:
       - name: manual approve
         run: |
@@ -68,6 +69,7 @@ jobs:
     timeout-minutes: 10
     needs:
       - approve
+    environment: test
     steps:
       - name: Deploy
         run: echo deploy
