@@ -166,6 +166,10 @@ jobs:
     environment: test-bsc
     steps:
       - uses: actions/checkout@v3
+        with:
+          # token: ${{ secrets.CI_TOKEN }}
+          submodules: true
+
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -178,6 +182,11 @@ jobs:
       #   with:
       #     name: contract-artifacts
 
+      - name: Restore deployment artifacts
+        run: |
+          mkdir .openzeppelin
+          cp ci-artifacts/test-bsc/* .openzeppelin/
+
       - name: Deploy
         run: npm run deploy
         env:
@@ -186,6 +195,12 @@ jobs:
           MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
           DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+
+      - name: Preserve deployment artifacts
+        run: |
+          git config --global user.name 'Git bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git commit -am "Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
   deploy-test-polygon:
