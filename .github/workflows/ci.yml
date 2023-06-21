@@ -182,16 +182,15 @@ jobs:
       #   with:
       #     name: contract-artifacts
 
-      - name: Build
-        run: npm run build
-
       - name: Restore deployment artifacts
         run: |
           mkdir .openzeppelin
           cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
-        run: npm run deploy
+        run: |
+          npm run deploy
+          echo "test"
         env:
           DEPLOY_CONFIG_PATH: environments/test-bsc.yml
           HARDHAT_NETWORK: bsc
