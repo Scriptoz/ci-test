@@ -205,7 +205,7 @@ jobs:
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           git checkout master
-          git remote set-url origin https://x-access-token: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@github.com/Scriptoz/ci-artifacts
+          git remote set-url origin https://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@github.com/Scriptoz/ci-artifacts
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
