@@ -182,6 +182,9 @@ jobs:
       #   with:
       #     name: contract-artifacts
 
+      - name: Build
+        run: npm run build
+
       - name: Restore deployment artifacts
         run: |
           mkdir .openzeppelin
