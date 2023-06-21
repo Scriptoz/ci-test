@@ -26,7 +26,7 @@ interface ContractDeployParams {
 }
   
 export async function deployEnvironment(config: any) {
-  console.log(`Deployment to ${config.name} has been started`);
+  console.log(`Deployment to ${config.name} has been started...`);
 
   for (const library of config.libraries) {
     if (!library.address) {
