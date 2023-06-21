@@ -167,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          # token: ${{ secrets.CI_TOKEN }}
+          token: '${{ secrets.CI_TOKEN }}'
           submodules: true
 
       - uses: actions/setup-node@v3
@@ -198,11 +198,12 @@ jobs:
 
       - name: Preserve deployment artifacts
         run: |
-          echo '${{ secrets.GITHUB_TOKEN }}'
+          echo Url1 https://x-access-token:'${{ secrets.GITHUB_TOKEN }}'@github.com/Scriptoz/ci-artifacts
+          echo Url2 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Scriptoz/ci-artifacts
           mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Scriptoz/ci-artifacts
+          git remote set-url origin https://x-access-token:'${{ secrets.GITHUB_TOKEN }}'@github.com/Scriptoz/ci-artifacts
           git commit -am "Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
