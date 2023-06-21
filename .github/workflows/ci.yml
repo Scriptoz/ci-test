@@ -167,7 +167,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: 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
+          token: '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'
           submodules: true
 
       - uses: actions/setup-node@v3
