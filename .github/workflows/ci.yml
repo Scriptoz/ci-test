@@ -166,9 +166,9 @@ jobs:
     environment: test-bsc
     steps:
       - uses: actions/checkout@v3
-        with:
-          # token: ${{ secrets.CI_TOKEN }}
-          submodules: true
+        # with:
+        #   # token: ${{ secrets.CI_TOKEN }}
+        #   submodules: true
 
       - uses: actions/setup-node@v3
         with:
