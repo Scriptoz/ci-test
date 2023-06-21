@@ -15,7 +15,7 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
@@ -42,7 +42,7 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
@@ -68,7 +68,7 @@ jobs:
   #     # Forge needs node_modules/
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
@@ -98,7 +98,7 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
@@ -117,7 +117,7 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
@@ -172,7 +172,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '18.12.1'
 
       - name: Install modules
         run: npm install
@@ -220,7 +220,7 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - uses: actions/setup-node@v3
   #       with:
-  #         node-version: '18'
+  #         node-version: '18.12.1'
 
   #     - name: Install modules
   #       run: npm install
