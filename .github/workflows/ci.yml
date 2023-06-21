@@ -185,7 +185,7 @@ jobs:
       - name: Restore deployment artifacts
         run: |
           mkdir .openzeppelin
-          cp ci-artifacts/test-bsc/* .openzeppelin/
+          cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
         run: npm run deploy
