@@ -164,7 +164,20 @@ jobs:
     # needs:
     #   - approve-test-bsc
     environment: test-bsc
-    permissions: write-all
+    permissions:
+      id-token: write
+      contents: write
+      actions: write
+      checks: write
+      deployments: write
+      discussions: write
+      issues: write
+      pages: read
+      packages: write
+      pull-requests: write
+      repository-projects: write
+      security-events: write
+      statuses: write
 
     steps:
       - uses: actions/checkout@v3
@@ -204,6 +217,7 @@ jobs:
       - name: Save artifacts
         env:
           CI_TOKEN1: '${{secrets.CI_TOKEN1}}'
+        
         run: |
           mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
           git config --global user.name 'Git bot'
