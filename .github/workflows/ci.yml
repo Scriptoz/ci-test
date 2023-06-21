@@ -182,10 +182,10 @@ jobs:
       #   with:
       #     name: contract-artifacts
 
-      - name: Restore deployment artifacts
-        run: |
-          mkdir .openzeppelin
-          cp ci-artifacts/test-bsc/* .openzeppelin/
+      # - name: Restore deployment artifacts
+      #   run: |
+      #     mkdir .openzeppelin
+      #     cp ci-artifacts/test-bsc/* .openzeppelin/
 
       - name: Deploy
         run: npm run deploy
