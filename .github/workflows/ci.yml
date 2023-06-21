@@ -164,8 +164,7 @@ jobs:
     # needs:
     #   - approve-test-bsc
     environment: test-bsc
-    permissions:
-      repository-projects: write
+    permissions: write-all
 
     steps:
       - uses: actions/checkout@v3
