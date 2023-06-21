@@ -200,15 +200,26 @@ jobs:
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
 
       - name: Save artifacts
-        run: |
-          mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
-          git config --global user.name 'Git bot'
-          git config --global user.email 'bot@noreply.github.com'
-          git checkout master
-          git remote set-url origin https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
-          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
-          git remote set-url origin https://Scriptoz:'${{secrets.CI_TOKEN1}}'@github.com/Scriptoz/ci-artifacts
-          git push || echo "No changes to commit2"
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: '${{secrets.CI_TOKEN1}}'
+        with:
+          # GitHub Action output files
+          source-directory: public/
+          destination-github-username: Scriptoz
+          destination-repository-name: ci-artifacts
+          user-email: bot@noreply.github.com
+          # It defaults to `main`
+          target-branch: "master"
+        # run: |
+        #   mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
+        #   git config --global user.name 'Git bot'
+        #   git config --global user.email 'bot@noreply.github.com'
+        #   git checkout master
+        #   git remote set-url origin https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
+        #   git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
+        #   git remote set-url origin https://Scriptoz:'${{secrets.CI_TOKEN1}}'@github.com/Scriptoz/ci-artifacts
+        #   git push || echo "No changes to commit2"
         
 
   # deploy-test-polygon:
