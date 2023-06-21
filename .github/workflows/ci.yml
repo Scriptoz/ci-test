@@ -209,13 +209,13 @@ jobs:
           git checkout master
           git remote remove origin
           git remote add origin https://Scriptoz:${{env.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
-          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit1"
+          git add . && git commit -m"Auto updated deploy artifacts" && git push --set-upstream origin master || echo "No changes to commit1"
           git remote remove origin
           git remote add origin https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
-          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
+          git push --set-upstream origin master || echo "No changes to commit"
           git remote remove origin
           git remote add origin https://Scriptoz:'${{secrets.CI_TOKEN1}}'@github.com/Scriptoz/ci-artifacts
-          git push || echo "No changes to commit2"
+          git push --set-upstream origin master || echo "No changes to commit2"
         
 
   # deploy-test-polygon:
