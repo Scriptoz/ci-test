@@ -177,18 +177,21 @@ jobs:
       - name: Install modules
         run: npm install
 
+      - name: Build
+        run: npm run build
+
       # - name: Load build artifacts
       #   uses: actions/download-artifact@v3
       #   with:
       #     name: contract-artifacts
 
-      - name: Restore deployment artifacts
+      - name: Restore artifacts
         run: |
           mkdir .openzeppelin
           cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
-        run: npx hardhat run ./scripts/deploy_env.ts
+        run: npm run deploy
         env:
           DEPLOY_CONFIG_PATH: environments/test-bsc.yml
           HARDHAT_NETWORK: bsc
@@ -196,7 +199,7 @@ jobs:
           DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
 
-      - name: Preserve deployment artifacts
+      - name: Save artifacts
         run: |
           mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
           git config --global user.name 'Git bot'
