@@ -187,6 +187,9 @@ jobs:
           mkdir .openzeppelin
           cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
+      - name: Build
+        run: npm run build
+  
       - name: Deploy
         run: npm run deploy
         env:
