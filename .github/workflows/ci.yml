@@ -205,12 +205,10 @@ jobs:
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           git checkout master
-          git remote set-url origin https://${{secrets.CI_TOKEN}}@github.com/Scriptoz/ci-artifacts
+          git remote set-url origin https://Scriptoz:${{secrets.CI_TOKEN}}@github.com/Scriptoz/ci-artifacts
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
-          git remote set-url origin https://'${{secrets.CI_TOKEN}}'@github.com/Scriptoz/ci-artifacts
+          git remote set-url origin https://Scriptoz:'${{secrets.CI_TOKEN}}'@github.com/Scriptoz/ci-artifacts
           git push || echo "No changes to commit2"
-          git remote set-url origin https://${{secrets.GITHUB_TOKEN}}@github.com/Scriptoz/ci-artifacts
-          git push || echo "No changes to commit3"
         
 
   # deploy-test-polygon:
