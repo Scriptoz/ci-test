@@ -7,29 +7,29 @@ on:
       - '**'
 
 jobs:
-  # build:
-  #   name: Build
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18'
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-  #     - name: Install modules
-  #       run: npm install
+      - name: Install modules
+        run: npm install
 
-  #     - name: Build
-  #       run: npm run build
+      - name: Build
+        run: npm run build
       
-  #     # - name: Save build artifacts
-  #     #   uses: actions/upload-artifact@v3
-  #     #   with:
-  #     #     name: contract-artifacts
-  #     #     path: |
-  #     #       artifacts
-  #     #       cache/*.json
+      # - name: Save build artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: contract-artifacts
+      #     path: |
+      #       artifacts
+      #       cache/*.json
 
 
   # test-hardhat:
@@ -157,101 +157,101 @@ jobs:
   #       run: echo "Manually approved"
 
 
-  deploy-test-bsc:
-    name: Deploy Test BSC
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # needs:
-    #   - approve-test-bsc
-    environment: test-bsc
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          # token: ${{ secrets.CI_TOKEN }}
-          submodules: true
+  # deploy-test-bsc:
+  #   name: Deploy Test BSC
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 10
+  #   # needs:
+  #   #   - approve-test-bsc
+  #   environment: test-bsc
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         # token: ${{ secrets.CI_TOKEN }}
+  #         submodules: true
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18'
 
-      - name: Install modules
-        run: npm install
+  #     - name: Install modules
+  #       run: npm install
 
-      # - name: Load build artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: contract-artifacts
+  #     # - name: Load build artifacts
+  #     #   uses: actions/download-artifact@v3
+  #     #   with:
+  #     #     name: contract-artifacts
 
-      # - name: Restore deployment artifacts
-      #   run: |
-      #     mkdir .openzeppelin
-      #     cp ci-artifacts/test-bsc/* .openzeppelin/
+  #     # - name: Restore deployment artifacts
+  #     #   run: |
+  #     #     mkdir .openzeppelin
+  #     #     cp ci-artifacts/test-bsc/* .openzeppelin/
 
-      - name: Deploy
-        run: npm run deploy
-        env:
-          DEPLOY_CONFIG_PATH: environments/test-bsc.yml
-          HARDHAT_NETWORK: bsc
-          MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
-          DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
-          ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+  #     - name: Deploy
+  #       run: npm run deploy
+  #       env:
+  #         DEPLOY_CONFIG_PATH: environments/test-bsc.yml
+  #         HARDHAT_NETWORK: bsc
+  #         MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
+  #         DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
+  #         ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
 
-      - name: Preserve deployment artifacts
-        run: |
-          git config --global user.name 'Git bot'
-          git config --global user.email 'bot@noreply.github.com'
-          git remote set-url origin https://github.com/Scriptoz/ci-artifacts.git
-          git commit -am "Auto updated deploy artifacts" && git push || echo "No changes to commit"
+  #     - name: Preserve deployment artifacts
+  #       run: |
+  #         git config --global user.name 'Git bot'
+  #         git config --global user.email 'bot@noreply.github.com'
+  #         git remote set-url origin https://github.com/Scriptoz/ci-artifacts.git
+  #         git commit -am "Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
-  deploy-test-polygon:
-    name: Deploy Test Polygon
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # needs:
-    #   - approve-test-polygon
-    environment: test-polygon
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+  # deploy-test-polygon:
+  #   name: Deploy Test Polygon
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 10
+  #   # needs:
+  #   #   - approve-test-polygon
+  #   environment: test-polygon
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18'
 
-      - name: Install modules
-        run: npm install
+  #     - name: Install modules
+  #       run: npm install
 
-      # - name: Load build artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: contract-artifacts
+  #     # - name: Load build artifacts
+  #     #   uses: actions/download-artifact@v3
+  #     #   with:
+  #     #     name: contract-artifacts
 
-      - name: Deploy
-        run: npm run deploy
-        env:
-          DEPLOY_CONFIG_PATH: environments/test-polygon.yml
-          HARDHAT_NETWORK: polygon
-          MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
-          DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
-          ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+  #     - name: Deploy
+  #       run: npm run deploy
+  #       env:
+  #         DEPLOY_CONFIG_PATH: environments/test-polygon.yml
+  #         HARDHAT_NETWORK: polygon
+  #         MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
+  #         DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
+  #         ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
 
 
-  set-version-test-bsc:
-    name: Set Version Test BSC
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs:
-      - deploy-test-bsc
-    steps:
-      - name: SetVersion
-        run: echo set version
+  # set-version-test-bsc:
+  #   name: Set Version Test BSC
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+  #   needs:
+  #     - deploy-test-bsc
+  #   steps:
+  #     - name: SetVersion
+  #       run: echo set version
         
 
-  set-version-test-polygon:
-    name: Set Version Test Polygon
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs:
-      - deploy-test-polygon
-    steps:
-      - name: SetVersion
-        run: echo set version
+  # set-version-test-polygon:
+  #   name: Set Version Test Polygon
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+  #   needs:
+  #     - deploy-test-polygon
+  #   steps:
+  #     - name: SetVersion
+  #       run: echo set version
