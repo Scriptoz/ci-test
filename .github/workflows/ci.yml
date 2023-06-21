@@ -187,9 +187,6 @@ jobs:
           mkdir .openzeppelin
           cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
-      - name: Build
-        run: npm run build
-  
       - name: Deploy
         run: npm run deploy
         env:
@@ -201,6 +198,7 @@ jobs:
 
       - name: Preserve deployment artifacts
         run: |
+          echo '${{ secrets.GITHUB_TOKEN }}'
           mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
