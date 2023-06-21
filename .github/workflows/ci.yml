@@ -203,9 +203,8 @@ jobs:
           mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          git status
           git remote set-url origin https://x-access-token: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@github.com/Scriptoz/ci-artifacts
-          git commit -am "Auto updated deploy artifacts" && git push || echo "No changes to commit"
+          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
   # deploy-test-polygon:
