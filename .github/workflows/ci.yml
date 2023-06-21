@@ -188,9 +188,7 @@ jobs:
           cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
-        run: |
-          npm run deploy
-          echo "test"
+        run: npm run deploy
         env:
           DEPLOY_CONFIG_PATH: environments/test-bsc.yml
           HARDHAT_NETWORK: bsc
@@ -202,7 +200,7 @@ jobs:
         run: |
           echo Url1 https://x-access-token:'${{ secrets.GITHUB_TOKEN }}'@github.com/Scriptoz/ci-artifacts
           echo Url2 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Scriptoz/ci-artifacts
-          mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_
+          mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ || exit 0
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           git remote set-url origin https://x-access-token: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@github.com/Scriptoz/ci-artifacts

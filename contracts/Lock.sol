@@ -10,6 +10,10 @@ contract Lock is OwnableUpgradeable {
         return 1;
     }
 
+    function test2() public pure returns (uint256) {
+        return 2;
+    }
+
     function hello() public pure returns (string memory) {
         return TestLib.hello();
     }
