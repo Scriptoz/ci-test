@@ -164,6 +164,9 @@ jobs:
     # needs:
     #   - approve-test-bsc
     environment: test-bsc
+    permissions:
+      repository-projects: write
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -208,7 +211,7 @@ jobs:
           git config --global user.email 'bot@noreply.github.com'
           git checkout -b ci-branch
           git remote remove origin
-          git remote add origin https://Scriptoz:${{env.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
+          git remote add origin https://Scriptoz:$CI_TOKEN1@github.com/Scriptoz/ci-artifacts
           git add . && git commit -m"Auto updated deploy artifacts" && git push --set-upstream origin ci-branch || echo "No changes to commit1"
           git remote remove origin
           git remote add origin https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
