@@ -32,103 +32,103 @@ jobs:
             cache/*.json
 
 
-  # test-hardhat:
-  #   name: Hardhat Test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   needs:
-  #     - build
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
+  test-hardhat:
+    name: Hardhat Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
 
-  #     - name: Install modules
-  #       run: npm install
+      - name: Install modules
+        run: npm install
 
-  #     # - name: Load build artifacts
-  #     #   uses: actions/download-artifact@v3
-  #     #   with:
-  #     #     name: contract-artifacts
+      - name: Load build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: contract-artifacts
 
-  #     - name: Test
-  #       run: npm run test:hardhat
-
-
-  # test-forge:
-  #   name: Forge Test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   needs:
-  #     - build
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     # Forge needs node_modules/
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
-
-  #     - name: Install modules
-  #       run: npm install
-
-  #     - name: Install Foundry
-  #       uses: foundry-rs/foundry-toolchain@v1
-  #       with:
-  #         version: nightly
-
-  #     - name: Run Forge build
-  #       run: |
-  #         forge --version
-  #         forge build
-
-  #     - name: Run Forge tests
-  #       run: |
-  #         forge test -vvv
+      - name: Test
+        run: npm run test:hardhat
 
 
-  # lint:
-  #   name: Lint
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
-  #   needs:
-  #     - build
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
+  test-forge:
+    name: Forge Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Install modules
-  #       run: npm install
+      # Forge needs node_modules/
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
 
-  #     - name: Lint
-  #       run: npm run lint:check
+      - name: Install modules
+        run: npm install
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Forge build
+        run: |
+          forge --version
+          forge build
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
 
 
-  # contracts-size:
-  #   name: Contracts Size
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
-  #   needs:
-  #     - build
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
 
-  #     - name: Install modules
-  #       run: npm install
+      - name: Install modules
+        run: npm install
 
-  #     # - name: Load build artifacts
-  #     #   uses: actions/download-artifact@v3
-  #     #   with:
-  #     #     name: contract-artifacts
+      - name: Lint
+        run: npm run lint:check
 
-  #     - name: Check sizes
-  #       run: npm run check-size
+
+  contracts-size:
+    name: Contracts Size
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
+
+      - name: Install modules
+        run: npm install
+
+      - name: Load build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: contract-artifacts
+
+      - name: Check sizes
+        run: npm run check-size
 
 
   # approve-test-bsc:
@@ -162,8 +162,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-      - build
-      # - approve-test-bsc
+      - test-hardhat
+      - test-forge
+      - lint
+      - contracts-size
     environment: test-bsc
 
     steps:
