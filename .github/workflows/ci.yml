@@ -200,10 +200,10 @@ jobs:
       - name: Restore artifacts
         run: |
           git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1 && cd ci-artifacts1
-          mkdir .openzeppelin
-          ls -ll
-          ls -ll test-bsc/
-          cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
+          git checkout master
+          cd ..
+          ls -ll ci-artifacts1/test-bsc/
+          mkdir .openzeppelin && cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
         run: npm run deploy
