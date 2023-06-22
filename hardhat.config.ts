@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const url = process.env.MAINNET_PROVIDER_URL!;
+const accounts = process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [];
+
 const config: any = {
   solidity: "0.8.18",
 
@@ -17,17 +20,25 @@ const config: any = {
 
   networks: {
     bsc: {
-      url: process.env.MAINNET_PROVIDER_URL || '',
+      url,
       chainId: 56,
       gas: 2100000,
-      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+      accounts,
       addressesSet: "bsc",
     },
+    bscTestnet: {
+      url,
+      chainId: 97,
+      gas: 2100000,
+      gasPrice: 80000000000,
+      accounts,
+      addressesSet: "bscTestnet",
+    },
     polygon: {
-      url: process.env.MAINNET_PROVIDER_URL || '',
+      url,
       chainId: 137,
       gasPrice: Number(process.env.GAS_PRICE_POLYGON),
-      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+      accounts,
       addressesSet: "polygon",
     },
   },
