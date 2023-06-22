@@ -208,6 +208,11 @@ export async function deployContract(data: ContractDeployParams) {
     console.log("Sleeping for 1 seconds before verification...");
     await sleep(1000);
     console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
+    
+    for (const library of libraries) {
+      await verify(library.address);
+    }
+    
     await verify(proxy.address);
 
     console.log("- Set version -", version);
