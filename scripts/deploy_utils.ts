@@ -21,9 +21,15 @@ interface ContractDeployParams {
 
   contractFactory: string;
 
+  initializer?: string;
+
+  initializerArgs?: any[];
+
   useUUPS?: boolean;
 
   version: string;
+
+  description?: string;
 
   libraries?: Array<{ factory: string, address: string }>;
 }
@@ -52,6 +58,8 @@ export async function deployEnvironment(config: any, version: string, gnosisSafe
 
     await deployContract({
       contractFactory: contract.factory,
+      initializer: contract.initializer,
+      initializerArgs: contract.initializerArgs,
       proxyAddress: contract.address,
       libraries,
       useMultiSig: !!gnosisSafeAddress && !!gnosisSafeServiceURL,
@@ -83,7 +91,8 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
 }
 
 export async function deployContract(data: ContractDeployParams) {
-  const { useMultiSig, gnosisSafeAddress = '', gnosisSafeServiceURL = '', proxyAddress, contractFactory, useUUPS, version, libraries = [] } = data;
+  const { gnosisSafeAddress = '', gnosisSafeServiceURL = '', contractFactory, initializer, initializerArgs, useUUPS, version, description, libraries = [] } = data;
+  let { proxyAddress } = data;
 
   const [ deployer ] = await ethers.getSigners();
 
@@ -105,6 +114,7 @@ export async function deployContract(data: ContractDeployParams) {
   let upgradeParam = {
     unsafeAllow: [],
     unsafeAllowLinkedLibraries: !!libraries.length,
+    initializer,
   };
 
   const ContractFactoryNew = await ethers.getContractFactory(
@@ -112,114 +122,115 @@ export async function deployContract(data: ContractDeployParams) {
     factoryParam
   );
 
-  if (useMultiSig) {
-    const provider = new ethers.providers.JsonRpcProvider(
-      // @ts-ignore
-      network.config.url,
-      // @ts-ignore
-      { name: network.config.addressesSet, chainId: network.config.chainId! }
-    );
+  const useMultiSig = !!gnosisSafeAddress && !!gnosisSafeServiceURL;
 
-    const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
+  let proxy;
 
-    // ---
-    console.log("- Upgrade -");
-    // ---
-
-    const contractImpl: any = await upgrades.prepareUpgrade(
-      proxyAddress,
+  if (!proxyAddress) {
+    console.log("- Deploy Proxy -");
+    
+    proxy = await upgrades.deployProxy(
       ContractFactoryNew,
-      upgradeParam
+      initializerArgs,
+      upgradeParam,
     );
+    await proxy.deployed();
 
-    console.log("Proxy:", proxyAddress);
-    console.log("New Implementation:", contractImpl);
+    const proxyImpl = await upgrades.erc1967.getImplementationAddress(
+      proxy.address
+    );
+    console.log("Proxy:", proxy.address);
+    console.log("Implementation:", proxyImpl);
 
-    if (useUUPS) {
-      // Factory should be changed for the contract
-      const ContractFactory = getContractFactory(contractFactory).connect(
-        proxyAddress,
-        deployer
-      );
-      await multisig(
-        gnosisSafeServiceURL,
-        ContractFactory,
-        "upgradeTo",
-        [contractImpl],
-        JSON.stringify(upgradeProxyAbi),
-        signer
-      );
-    } else {
-      const proxyAdmin = (await upgrades.admin.getInstance()).address;
-      const ProxyAdmin = ethers.ContractFactory.getContract(
-        proxyAdmin,
-        proxyAdminAbi,
-        deployer
-      );
+    proxyAddress = proxy.address;
 
-      await multisig(
-        gnosisSafeServiceURL,
-        ProxyAdmin,
-        "upgrade",
-        [proxyAddress, contractImpl],
-        JSON.stringify(proxyAdminAbi),
-        signer
-      );
+    if (useMultiSig) {
+      const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
+      await contract.transferOwnership(gnosisSafeAddress)
     }
-
-    // ---
-    console.log("- Verify contract -");
-    // ---
-    console.log("Sleeping for 1 seconds before verification...");
-    await sleep(1000);
-    console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
-    await verify(contractImpl);
-  } else {
-    let proxy: any;
-
-    if (!proxyAddress) {
-      console.log("- Deploy Proxy -");
-
-      proxy = await upgrades.deployProxy(
-        ContractFactoryNew,
-        [],
-        upgradeParam,
-      );
-      await proxy.deployed();
-  
-      const proxyImpl = await upgrades.erc1967.getImplementationAddress(
-        proxy.address
-      );
-      console.log("Proxy:", proxy.address);
-      console.log("Implementation:", proxyImpl);
-    } else {
-      console.log("- Upgrade Implementation -");
-
-      proxy = await upgrades.upgradeProxy(
-        proxyAddress,
-        ContractFactoryNew,
-        upgradeParam
-      );
-      await proxy.deployed();
-    }
-
-    console.log("- Verify contract -");
-    console.log("Sleeping for 1 seconds before verification...");
-    await sleep(1000);
-    console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
-    
-    for (const library of libraries) {
-      await verify(library.address);
-    }
-    
-    await verify(proxy.address);
-
-    console.log("- Set version -", version);
-    const tx = await proxy
-      .connect(deployer)
-      .upgradeVersion(version, "");
-    await tx.wait(1);
   }
+
+  // if (useMultiSig) {    
+  //   const provider = new ethers.providers.JsonRpcProvider(
+  //     // @ts-ignore
+  //     network.config.url,
+  //     // @ts-ignore
+  //     { name: network.config.addressesSet, chainId: network.config.chainId! }
+  //   );
+
+  //   const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
+
+  //   // ---
+  //   console.log("- Upgrade -");
+  //   // ---
+
+  //   const contractImpl: any = await upgrades.prepareUpgrade(
+  //     proxyAddress,
+  //     ContractFactoryNew,
+  //     upgradeParam
+  //   );
+
+  //   console.log("Proxy:", proxyAddress);
+  //   console.log("New Implementation:", contractImpl);
+
+  //   if (useUUPS) {
+  //     // Factory should be changed for the contract
+  //     const ContractFactory = getContractFactory(contractFactory).connect(
+  //       proxyAddress,
+  //       deployer
+  //     );
+  //     await multisig(
+  //       gnosisSafeServiceURL,
+  //       ContractFactory,
+  //       "upgradeTo",
+  //       [contractImpl],
+  //       JSON.stringify(upgradeProxyAbi),
+  //       signer
+  //     );
+  //   } else {
+  //     const proxyAdmin = (await upgrades.admin.getInstance()).address;
+  //     const ProxyAdmin = ethers.ContractFactory.getContract(
+  //       proxyAdmin,
+  //       proxyAdminAbi,
+  //       deployer
+  //     );
+
+  //     await multisig(
+  //       gnosisSafeServiceURL,
+  //       ProxyAdmin,
+  //       "upgrade",
+  //       [proxyAddress, contractImpl],
+  //       JSON.stringify(proxyAdminAbi),
+  //       signer
+  //     );
+  //   }
+  // } else {
+  //   console.log("- Upgrade Implementation -");
+
+  //   proxy = await upgrades.upgradeProxy(
+  //     proxyAddress,
+  //     ContractFactoryNew,
+  //     upgradeParam
+  //   );
+  //   await proxy.deployed();
+  // }
+
+  console.log("- Verify contract -");
+  console.log("Sleeping for 1 seconds before verification...");
+  await sleep(1000);
+  console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
+  
+  for (const library of libraries) {
+    await verify(library.address);
+  }
+  
+  await verify(proxyAddress);
+
+  // console.log("- Set version -", version);
+  // const tx = await proxy
+  //   .connect(deployer)
+  //   .upgradeVersion(version, description);
+  // await tx.wait(1);
 }
 
 function getContractFactory(factoryName: string) {
@@ -231,3 +242,7 @@ function getContractFactory(factoryName: string) {
       throw new Error(`Unregistered contract factory name '${factoryName}'`);
   }
 }
+
+// async function createContract(): Promise<string> {
+
+// }

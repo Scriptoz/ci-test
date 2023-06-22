@@ -2,12 +2,24 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./TestLib.sol";
 
-contract Lock is OwnableUpgradeable {
+contract Lock is OwnableUpgradeable, UUPSUpgradeable {
     string private _version;
     string private _purpose;
+
+    function __Lock_init() public initializer {
+        __Ownable_init();
+        __UUPSUpgradeable_init();
+    }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyOwner
+    {}
 
     function getVersion() external view returns (string memory) {
         return _version;
