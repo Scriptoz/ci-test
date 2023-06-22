@@ -210,10 +210,10 @@ export async function deployContract(data: ContractDeployParams) {
     console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
     await verify(proxy.address);
 
-    console.log("- Set version -");
+    console.log("- Set version -", version);
     const tx = await proxy
       .connect(deployer)
-      .upgradeVersion("1", "2");
+      .upgradeVersion(version, "");
     await tx.wait(1);
   }
 }
