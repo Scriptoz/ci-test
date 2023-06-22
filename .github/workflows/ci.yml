@@ -192,7 +192,7 @@ jobs:
         run: npm run deploy
         env:
           DEPLOY_CONFIG_PATH: environments/test-bsc.yml
-          HARDHAT_NETWORK: bsc
+          HARDHAT_NETWORK: bscTestnet
           MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
           DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
