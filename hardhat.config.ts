@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const url = process.env.MAINNET_PROVIDER_URL!;
+const url = process.env.MAINNET_PROVIDER_URL || '';
 const accounts = process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [];
 
 const config: any = {
