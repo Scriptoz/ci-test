@@ -32,9 +32,7 @@ contract Lock is OwnableUpgradeable {
     function upgradeVersion(
         string memory version,
         string memory purpose
-    ) external onlyOwner {
-        require(bytes(version).length != 0, "OV1");
-
+    ) external {
         _version = version;
         _purpose = purpose;
     }
