@@ -11,7 +11,7 @@ contract Lock is OwnableUpgradeable {
     }
 
     function test2() public pure returns (uint256) {
-        return 2;
+        return 22;
     }
 
     function hello() public pure returns (string memory) {
