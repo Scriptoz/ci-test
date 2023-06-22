@@ -181,9 +181,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
+        # with:
           # token: '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'
-          submodules: true
+          # submodules: true
 
       - uses: actions/setup-node@v3
         with:
@@ -202,8 +202,9 @@ jobs:
 
       - name: Restore artifacts
         run: |
+          git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1 && cd ci-artifacts1
           mkdir .openzeppelin
-          cp ci-artifacts/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
+          cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
         run: npm run deploy
@@ -219,7 +220,7 @@ jobs:
           CI_TOKEN1: '${{secrets.CI_TOKEN1}}'
         
         run: |
-          mkdir -p ci-artifacts/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts/test-bsc || exit 0
+          mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           git checkout -b ci-branch
