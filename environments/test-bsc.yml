@@ -8,3 +8,9 @@ contracts:
     address: '0x40192380F44a2D9E1D5666741E867A65beF4A4FE'
     libraries:
       - TestLib
+
+  - factory: Lock
+    description: Another Lock contract
+    address:
+    libraries:
+      - TestLib
