@@ -29,14 +29,13 @@ contract Lock is OwnableUpgradeable {
         return TestLib.hello();
     }
 
-    function upgradeVersion(string memory version, string memory purpose)
-        external
-        onlyOwner
-    {
+    function upgradeVersion(
+        string memory version,
+        string memory purpose
+    ) external onlyOwner {
         require(bytes(version).length != 0, "OV1");
 
         _version = version;
         _purpose = purpose;
     }
-
 }
