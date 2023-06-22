@@ -7,29 +7,29 @@ on:
       - '**'
 
 jobs:
-  # build:
-  #   name: Build
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
 
-  #     - name: Install modules
-  #       run: npm install
+      - name: Install modules
+        run: npm install
 
-  #     - name: Build
-  #       run: npm run build
+      - name: Build
+        run: npm run build
       
-  #     # - name: Save build artifacts
-  #     #   uses: actions/upload-artifact@v3
-  #     #   with:
-  #     #     name: contract-artifacts
-  #     #     path: |
-  #     #       artifacts
-  #     #       cache/*.json
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: contract-artifacts
+          path: |
+            artifacts
+            cache/*.json
 
 
   # test-hardhat:
@@ -161,8 +161,9 @@ jobs:
     name: Deploy Test BSC
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # needs:
-    #   - approve-test-bsc
+    needs:
+      - build
+      # - approve-test-bsc
     environment: test-bsc
 
     steps:
@@ -175,13 +176,13 @@ jobs:
       - name: Install modules
         run: npm install
 
-      - name: Build
-        run: npm run build
+      # - name: Build
+      #   run: npm run build
 
-      # - name: Load build artifacts
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: contract-artifacts
+      - name: Load build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: contract-artifacts
 
       - name: Restore artifacts
         run: |
