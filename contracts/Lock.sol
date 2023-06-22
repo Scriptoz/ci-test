@@ -6,6 +6,17 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./TestLib.sol";
 
 contract Lock is OwnableUpgradeable {
+    string private _version;
+    string private _purpose;
+
+    function getVersion() external view returns (string memory) {
+        return _version;
+    }
+
+    function getPurpose() external view returns (string memory) {
+        return _purpose;
+    }
+
     function test() public pure returns (uint256) {
         return 1;
     }
@@ -17,4 +28,15 @@ contract Lock is OwnableUpgradeable {
     function hello() public pure returns (string memory) {
         return TestLib.hello();
     }
+
+    function upgradeVersion(string memory version, string memory purpose)
+        external
+        onlyOwner
+    {
+        require(bytes(version).length != 0, "OV1");
+
+        _version = version;
+        _purpose = purpose;
+    }
+
 }

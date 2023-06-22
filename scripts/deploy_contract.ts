@@ -15,6 +15,7 @@ async function main() {
   const useLibrary = yn(process.env.UPGRADE_USE_LIBRARY!);
   const libraryName = process.env.UPGRADE_LIBRARY_NAME!;
   const libraryAddress = process.env.UPGRADE_LIBRARY_ADDRESS!;
+  const version = process.env.CONTRACT_VERSION!;
 
   // ---
   console.log("- Validation -");
@@ -76,6 +77,7 @@ async function main() {
     gnosisSafeAddress,
     gnosisSafeServiceURL,
     libraries,
+    version,
   });
 }
 

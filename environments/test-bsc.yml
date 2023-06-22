@@ -5,6 +5,6 @@ libraries:
 contracts:
   - factory: Lock
     description: The purpose of a contract
-    address: '0x40192380F44a2D9E1D5666741E867A65beF4A4FE'
+    address:
     libraries:
       - TestLib

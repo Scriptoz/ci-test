@@ -13,10 +13,16 @@ async function main() {
   if (!configPath) {
     throw new Error('"DEPLOY_CONFIG_PATH" env is undeclared');
   }
-  
+
   const config = yaml.load(fs.readFileSync(configPath, 'utf8'));
   
-  await deployEnvironment(config);
+  const version = process.env.CONTRACT_VERSION;
+
+  if (!version) {
+    throw new Error('"CONTRACT_VERSION" env is undeclared');
+  }
+  
+  await deployEnvironment(config, version);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

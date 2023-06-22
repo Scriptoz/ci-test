@@ -22,10 +22,12 @@ interface ContractDeployParams {
 
   useUUPS?: boolean;
 
+  version: string;
+
   libraries?: Array<{ factory: string, address: string }>;
 }
   
-export async function deployEnvironment(config: any) {
+export async function deployEnvironment(config: any, version: string) {
   console.log(`Deployment to ${config.name} has been started...`);
 
   for (const library of config.libraries) {
@@ -52,6 +54,7 @@ export async function deployEnvironment(config: any) {
       proxyAddress: contract.address,
       libraries,
       useUUPS: true,
+      version,
     });
   }
 
@@ -76,7 +79,7 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
 }
 
 export async function deployContract(data: ContractDeployParams) {
-  const { useMultiSig, gnosisSafeAddress = '', gnosisSafeServiceURL = '', proxyAddress, contractFactory, useUUPS, libraries = [] } = data;
+  const { useMultiSig, gnosisSafeAddress = '', gnosisSafeServiceURL = '', proxyAddress, contractFactory, useUUPS, version, libraries = [] } = data;
 
   const [ deployer ] = await ethers.getSigners();
 
@@ -201,12 +204,20 @@ export async function deployContract(data: ContractDeployParams) {
       await proxy.deployed();
     }
 
-    // ---
     console.log("- Verify contract -");
-    // ---
     console.log("Sleeping for 1 seconds before verification...");
     await sleep(1000);
     console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
     await verify(proxy.address);
+
+    console.log("- Set version -");
+    const tx = await proxy
+      .connect(deployer)
+      .upgradeVersion(version, "");
+    await tx.wait(1);
   }
+}
+
+export async function setVersion(version: string) {
+
 }
