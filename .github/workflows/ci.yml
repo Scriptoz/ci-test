@@ -16,16 +16,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.12.1'
+          cache: 'npm'
 
       - name: Install modules
         run: npm install
-
-      - name: Save node modules
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-modules
-          path: |
-            node_modules
 
       - name: Build
         run: npm run build
@@ -50,11 +44,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.12.1'
+          cache: 'npm'
 
-      - name: Load node modules
-        uses: actions/download-artifact@v3
-        with:
-          name: node-modules
+      - name: Install modules
+        run: npm install
 
       - name: Load build artifacts
         uses: actions/download-artifact@v3
