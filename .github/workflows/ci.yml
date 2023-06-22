@@ -199,6 +199,8 @@ jobs:
           MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
           DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+          GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
+          GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
           CONTRACT_VERSION: '${{ github.sha }}'
 
       - name: Save artifacts
