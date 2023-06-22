@@ -181,9 +181,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        # with:
-          # token: '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'
-          # submodules: true
 
       - uses: actions/setup-node@v3
         with:
@@ -223,16 +220,8 @@ jobs:
           mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          git checkout -b ci-branch
-          git remote remove origin
-          git remote add origin https://Scriptoz:$CI_TOKEN1@github.com/Scriptoz/ci-artifacts
-          git add . && git commit -m"Auto updated deploy artifacts" && git push --set-upstream origin ci-branch || echo "No changes to commit1"
-          git remote remove origin
-          git remote add origin https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts
-          git push --set-upstream origin ci-branch || echo "No changes to commit"
-          git remote remove origin
-          git remote add origin https://Scriptoz:'${{secrets.CI_TOKEN1}}'@github.com/Scriptoz/ci-artifacts
-          git push --set-upstream origin ci-branch || echo "No changes to commit2"
+          git checkout -b master
+          git add . && git commit -m"Auto updated deploy artifacts" && git push --set-upstream origin master || echo "No changes to commit1"
         
 
   # deploy-test-polygon:
