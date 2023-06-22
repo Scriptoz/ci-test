@@ -6,7 +6,6 @@ import { deployContract } from "./deploy_utils";
 dotenv.config();
 
 async function main() {
-  const useMultiSig = yn(process.env.UPGRADE_USE_MULTISIG, { default: false });
   const proxyAddress = process.env.UPGRADE_PROXY_ADDRESS!;
   const contractFactory = process.env.UPGRADE_CONTRACT_NEW!;
   const gnosisSafeAddress = process.env.GNOSIS_SAFE_ADDRESS!;
@@ -31,16 +30,6 @@ async function main() {
     return;
   }
 
-  if (useMultiSig && !gnosisSafeServiceURL) {
-    console.warn("Please set the GNOSIS_SAFE_SERVICE_URL");
-    return;
-  }
-
-  if (useMultiSig && !gnosisSafeAddress) {
-    console.warn("Please set the GNOSIS_SAFE_ADDRESS");
-    return;
-  }
-
   if (useLibrary && !libraryName) {
     console.warn("Please set the UPGRADE_LIBRARY_NAME");
     return;
@@ -60,9 +49,8 @@ async function main() {
 
   console.log("Proxy Address:", proxyAddress);
   console.log("Contract Factory:", contractFactory);
-  console.log("use MultiSig:", useMultiSig);
-  if (useMultiSig) console.log("GnosisSafe Address:", gnosisSafeAddress);
-  if (useMultiSig) console.log("GnosisSafe URL:", gnosisSafeServiceURL);
+  console.log("GnosisSafe Address:", gnosisSafeAddress);
+  console.log("GnosisSafe URL:", gnosisSafeServiceURL);
   console.log("Use UUPS:", useUUPS);
   console.log("Libraries:", libraries);
 
@@ -70,7 +58,6 @@ async function main() {
   // await keypress();
 
   return deployContract({
-    useMultiSig,
     contractFactory,
     proxyAddress,
     useUUPS,
