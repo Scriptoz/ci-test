@@ -164,20 +164,6 @@ jobs:
     # needs:
     #   - approve-test-bsc
     environment: test-bsc
-    permissions:
-      id-token: write
-      contents: write
-      actions: write
-      checks: write
-      deployments: write
-      discussions: write
-      issues: write
-      pages: read
-      packages: write
-      pull-requests: write
-      repository-projects: write
-      security-events: write
-      statuses: write
 
     steps:
       - uses: actions/checkout@v3
@@ -219,8 +205,7 @@ jobs:
           mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          git checkout master
-          git add . && git commit -m"Auto updated deploy artifacts" && git push --set-upstream origin master || echo "No changes to commit1"
+          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
         
 
   # deploy-test-polygon:
