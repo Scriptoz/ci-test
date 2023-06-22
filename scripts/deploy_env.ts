@@ -22,7 +22,7 @@ async function main() {
     throw new Error('"CONTRACT_VERSION" env is undeclared');
   }
   
-  await deployEnvironment(config, version);
+  await deployEnvironment(config, version, process.env.GNOSIS_SAFE_ADDRESS, process.env.GNOSIS_SAFE_SERVICE_URL);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

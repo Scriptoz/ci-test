@@ -8,6 +8,7 @@ import {
 import { upgradeProxyAbi } from "../data/contracts_abi/upgradeProxy.json";
 import { proxyAdminAbi } from "../data/contracts_abi/proxyAdmin.json";
 import "@openzeppelin/hardhat-upgrades";
+import { Lock__factory } from "../typechain-types";
 
 interface ContractDeployParams {
   useMultiSig?: boolean;
@@ -27,7 +28,7 @@ interface ContractDeployParams {
   libraries?: Array<{ factory: string, address: string }>;
 }
   
-export async function deployEnvironment(config: any, version: string) {
+export async function deployEnvironment(config: any, version: string, gnosisSafeAddress?: string, gnosisSafeServiceURL?: string) {
   console.log(`Deployment to ${config.name} has been started...`);
 
   for (const library of config.libraries) {
@@ -53,6 +54,9 @@ export async function deployEnvironment(config: any, version: string) {
       contractFactory: contract.factory,
       proxyAddress: contract.address,
       libraries,
+      useMultiSig: !!gnosisSafeAddress && !!gnosisSafeServiceURL,
+      gnosisSafeAddress,
+      gnosisSafeServiceURL,
       useUUPS: true,
       version,
     });
@@ -103,78 +107,73 @@ export async function deployContract(data: ContractDeployParams) {
     unsafeAllowLinkedLibraries: !!libraries.length,
   };
 
-  const ContractFactory = await ethers.getContractFactory(
+  const ContractFactoryNew = await ethers.getContractFactory(
     contractFactory,
     factoryParam
   );
 
-  if (useMultiSig && false) {
-    // const provider = new ethers.providers.JsonRpcProvider(
-    //   // @ts-ignore
-    //   network.config.url,
-    //   // @ts-ignore
-    //   {name: network.config.addressesSet, chainId: network.config.chainId!}
-    // );
+  if (useMultiSig) {
+    const provider = new ethers.providers.JsonRpcProvider(
+      // @ts-ignore
+      network.config.url,
+      // @ts-ignore
+      { name: network.config.addressesSet, chainId: network.config.chainId! }
+    );
 
-    // const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+    const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
 
-    // // ---
-    // console.log("- Upgrade -");
-    // // ---
+    // ---
+    console.log("- Upgrade -");
+    // ---
 
-    // const contractImpl = await upgrades.prepareUpgrade(
-    //   proxyAddress,
-    //   ContractFactory,
-    //   upgradeParam
-    // );
+    const contractImpl: any = await upgrades.prepareUpgrade(
+      proxyAddress,
+      ContractFactoryNew,
+      upgradeParam
+    );
 
-    // console.log("Proxy:", proxyAddress);
-    // console.log("New Implementation:", contractImpl);
+    console.log("Proxy:", proxyAddress);
+    console.log("New Implementation:", contractImpl);
 
-    // if (useUUPS) {
-    //   // Factory should be changed for the contract
-    //   const ContractFactory = DForceLogic__factory.connect(
-    //     proxyAddress,
-    //     deployer
-    //   );
-    //   await multisig(
-    //     gnosisSafeServiceURL,
-    //     ContractFactory,
-    //     "upgradeTo",
-    //     [contractImpl],
-    //     JSON.stringify(upgradeProxyAbi),
-    //     signer
-    //   );
-    // } else {
-    //   // await upgrades.admin.transferProxyAdminOwnership(gnosisSafeAddress);
-    //   const proxyAdmin = (await upgrades.admin.getInstance()).address;
-    //   const ProxyAdmin = ethers.ContractFactory.getContract(
-    //     proxyAdmin,
-    //     proxyAdminAbi,
-    //     deployer
-    //   );
+    if (useUUPS) {
+      // Factory should be changed for the contract
+      const ContractFactory = getContractFactory(contractFactory).connect(
+        proxyAddress,
+        deployer
+      );
+      await multisig(
+        gnosisSafeServiceURL,
+        ContractFactory,
+        "upgradeTo",
+        [contractImpl],
+        JSON.stringify(upgradeProxyAbi),
+        signer
+      );
+    } else {
+      const proxyAdmin = (await upgrades.admin.getInstance()).address;
+      const ProxyAdmin = ethers.ContractFactory.getContract(
+        proxyAdmin,
+        proxyAdminAbi,
+        deployer
+      );
 
-    //   await multisig(
-    //     gnosisSafeServiceURL,
-    //     ProxyAdmin,
-    //     "upgrade",
-    //     [proxyAddress, contractImpl],
-    //     JSON.stringify(proxyAdminAbi),
-    //     signer
-    //   );
-    // }
+      await multisig(
+        gnosisSafeServiceURL,
+        ProxyAdmin,
+        "upgrade",
+        [proxyAddress, contractImpl],
+        JSON.stringify(proxyAdminAbi),
+        signer
+      );
+    }
 
-    // // ---
-    // console.log("- Verify contract -");
-    // // ---
-    // console.log("Sleeping for 1 seconds before verification...");
-    // await sleep(1000);
-    // console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
-    // await verify(contractImpl);
-
-    // // --- Disable automatic run for GnosisSafe ---
-    // // secondConfirmTransaction(signer2);
-    // // executeBatch(signer);
+    // ---
+    console.log("- Verify contract -");
+    // ---
+    console.log("Sleeping for 1 seconds before verification...");
+    await sleep(1000);
+    console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
+    await verify(contractImpl);
   } else {
     let proxy: any;
 
@@ -182,7 +181,7 @@ export async function deployContract(data: ContractDeployParams) {
       console.log("- Deploy Proxy -");
 
       proxy = await upgrades.deployProxy(
-        ContractFactory,
+        ContractFactoryNew,
         [],
         upgradeParam,
       );
@@ -198,7 +197,7 @@ export async function deployContract(data: ContractDeployParams) {
 
       proxy = await upgrades.upgradeProxy(
         proxyAddress,
-        ContractFactory,
+        ContractFactoryNew,
         upgradeParam
       );
       await proxy.deployed();
@@ -223,6 +222,12 @@ export async function deployContract(data: ContractDeployParams) {
   }
 }
 
-export async function setVersion(version: string) {
+function getContractFactory(factoryName: string) {
+  switch (factoryName) {
+    case 'Lock':
+      return Lock__factory;
 
+    default:
+      throw new Error(`Unregistered contract factory name '${factoryName}'`);
+  }
 }
