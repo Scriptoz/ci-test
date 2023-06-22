@@ -8,11 +8,6 @@ import { deployEnvironment } from './deploy_utils';
 dotenv.config();
 
 async function main() {
-  console.log('----------------------');
-  console.log('DEPLOY_CONFIG_PATH', process.env.DEPLOY_CONFIG_PATH);
-  console.log('MAINNET_PROVIDER_URL', process.env.MAINNET_PROVIDER_URL);
-  console.log('DEPLOYER_PRIVATE_KEY', process.env.DEPLOYER_PRIVATE_KEY);
-
   const configPath = process.env.DEPLOY_CONFIG_PATH;
 
   if (!configPath) {

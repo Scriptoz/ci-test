@@ -100,7 +100,6 @@ export async function deployContract(data: ContractDeployParams) {
     unsafeAllowLinkedLibraries: !!libraries.length,
   };
 
-  console.log('factoryParam', factoryParam)
   const ContractFactory = await ethers.getContractFactory(
     contractFactory,
     factoryParam
