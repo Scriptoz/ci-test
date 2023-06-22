@@ -213,7 +213,7 @@ export async function deployContract(data: ContractDeployParams) {
     console.log("- Set version -");
     const tx = await proxy
       .connect(deployer)
-      .upgradeVersion(version, "");
+      .upgradeVersion("1", "2");
     await tx.wait(1);
   }
 }
