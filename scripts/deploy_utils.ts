@@ -1,4 +1,4 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers, upgrades, network } from "hardhat";
 import { sleep, verify } from "../utils/helpers";
 import { multisig } from "../utils/multisig";
 import { upgradeProxyAbi } from "../data/contracts_abi/upgradeProxy.json";

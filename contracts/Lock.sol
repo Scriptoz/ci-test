@@ -42,7 +42,7 @@ contract Lock is OwnableUpgradeable, UUPSUpgradeable {
     function upgradeVersion(
         string memory version,
         string memory purpose
-    ) external {
+    ) external onlyOwner {
         _version = version;
         _purpose = purpose;
     }
