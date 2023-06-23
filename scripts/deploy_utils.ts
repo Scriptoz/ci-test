@@ -3,6 +3,7 @@ import { sleep, verify } from "../utils/helpers";
 import { multisig } from "../utils/multisig";
 import { upgradeProxyAbi } from "../data/contracts_abi/upgradeProxy.json";
 import { proxyAdminAbi } from "../data/contracts_abi/proxyAdmin.json";
+import { OwnableUpgradeableVersionableAbi } from "../data/contracts_abi/ownableUpgradeableVersionableAbi.json";
 import "@openzeppelin/hardhat-upgrades";
 import { Lock__factory } from "../typechain-types";
 import { ContractFactory } from "ethers";
@@ -133,9 +134,34 @@ export async function deployContract(data: ContractDeployParams) {
   await verify(proxyAddress);
 
   console.log("- Set version -", version);
-  const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
-  const tx = await contract.upgradeVersion(version, description);
-  await tx.wait(1);
+  if (useMultiSig) {
+    const provider = new ethers.providers.JsonRpcProvider(
+      // @ts-ignore
+      network.config.url,
+      // @ts-ignore
+      { name: network.config.addressesSet, chainId: network.config.chainId! }
+    );
+
+    const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
+
+    const ContractFactoryNew = getContractFactory(contractFactory).connect(
+      proxyAddress,
+      deployer
+    );
+
+    await multisig(
+      gnosisSafeServiceURL,
+      ContractFactoryNew,
+      'upgradeVersion',
+      [version, description],
+      JSON.stringify(OwnableUpgradeableVersionableAbi),
+      signer
+    );
+  } else {
+    const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
+    const tx = await contract.upgradeVersion(version, description);
+    await tx.wait(1);
+  }
 }
 
 function getContractFactory(factoryName: string) {
