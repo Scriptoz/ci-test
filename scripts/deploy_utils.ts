@@ -118,9 +118,9 @@ export async function deployContract(data: ContractDeployParams) {
       const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
       await contract.transferOwnership(gnosisSafeAddress)
     }
+  } else {
+    await upgradeContract(data);
   }
-
-  await upgradeContract(data);
 
   console.log("- Verify contract -");
   console.log("Sleeping for 1 seconds before verification...");
