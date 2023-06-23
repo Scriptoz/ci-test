@@ -262,6 +262,14 @@ async function upgradeContract(data: ContractDeployParams) {
     console.log("Proxy:", proxyAddress);
     console.log("New Implementation:", contractImpl);
 
+    const currentImpl = await upgrades.erc1967.getImplementationAddress(
+      proxyAddress
+    );
+
+    if (contractImpl === currentImpl) {
+      return;
+    }
+
     if (useUUPS) {
       // Factory should be changed for the contract
       const ContractFactoryNew = getContractFactory(contractFactory).connect(
