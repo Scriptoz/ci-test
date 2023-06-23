@@ -187,7 +187,7 @@ jobs:
         with:
           name: build-artifacts
 
-      - name: Restore artifacts
+      - name: Restore deploy artifacts
         run: |
           git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
           mkdir .openzeppelin && cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
@@ -204,14 +204,14 @@ jobs:
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
           CONTRACT_VERSION: '${{ github.sha }}'
 
-      - name: Upload artifacts
+      - name: Upload deploy artifacts
         uses: actions/upload-artifact@v3
         with:
           name: deploy-artifacts
           path: |
             .openzeppelin/
 
-      - name: Push artifacts
+      - name: Push deploy artifacts
         run: |
           mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
           git config --global user.name 'Git bot'
