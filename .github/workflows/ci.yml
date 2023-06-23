@@ -203,7 +203,14 @@ jobs:
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
           CONTRACT_VERSION: '${{ github.sha }}'
 
-      - name: Save artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: contract-artifacts
+          path: |
+            ci-artifacts/
+
+      - name: Push artifacts
         run: |
           mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
           git config --global user.name 'Git bot'
