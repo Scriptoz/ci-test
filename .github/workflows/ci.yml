@@ -27,7 +27,7 @@ jobs:
       - name: Save build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: contract-artifacts
+          name: build-artifacts
           path: |
             artifacts
             cache/*.json
@@ -53,7 +53,7 @@ jobs:
       - name: Load build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: contract-artifacts
+          name: build-artifacts
 
       - name: Test
         run: npm run test:hardhat
@@ -128,7 +128,7 @@ jobs:
       - name: Load build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: contract-artifacts
+          name: build-artifacts
 
       - name: Check sizes
         run: npm run check-size
@@ -184,7 +184,7 @@ jobs:
       - name: Load build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: contract-artifacts
+          name: build-artifacts
 
       - name: Restore artifacts
         run: |
@@ -206,9 +206,9 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: contract-artifacts
+          name: deploy-artifacts
           path: |
-            ci-artifacts/
+            .openzeppelin/
 
       - name: Push artifacts
         run: |
@@ -237,7 +237,7 @@ jobs:
   #     # - name: Load build artifacts
   #     #   uses: actions/download-artifact@v3
   #     #   with:
-  #     #     name: contract-artifacts
+  #     #     name: build-artifacts
 
   #     - name: Deploy
   #       run: npm run deploy
