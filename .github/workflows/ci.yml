@@ -217,34 +217,61 @@ jobs:
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
-        
 
-  # deploy-test-polygon:
-  #   name: Deploy Test Polygon
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   # needs:
-  #   #   - approve-test-polygon
-  #   environment: test-polygon
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.12.1'
 
-  #     - name: Install modules
-  #       run: npm install
+  deploy-test-polygon:
+    name: Deploy Test Polygon
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - test-hardhat
+      - test-forge
+      - lint
+      - contracts-size
+    environment: test-polygon
 
-  #     # - name: Load build artifacts
-  #     #   uses: actions/download-artifact@v3
-  #     #   with:
-  #     #     name: build-artifacts
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Deploy
-  #       run: npm run deploy
-  #       env:
-  #         DEPLOY_CONFIG_PATH: environments/test-polygon.yml
-  #         HARDHAT_NETWORK: polygon
-  #         MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
-  #         DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
-  #         ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.12.1'
+
+      - name: Install modules
+        run: npm install
+
+      - name: Load build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+
+      - name: Restore deploy artifacts
+        run: |
+          git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
+          mkdir .openzeppelin && cp ci-artifacts1/test-polygon/* .openzeppelin/ || echo "Artifacts were not found"
+
+      - name: Deploy
+        run: npm run deploy
+        env:
+          DEPLOY_CONFIG_PATH: environments/test-polygon.yml
+          HARDHAT_NETWORK: polygon
+          MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
+          DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
+          ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+          GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
+          GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
+          CONTRACT_VERSION: '${{ github.sha }}'
+
+      - name: Upload deploy artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: deploy-artifacts
+          path: |
+            .openzeppelin/
+
+      - name: Push deploy artifacts
+        run: |
+          mkdir -p ci-artifacts1/test-polygon/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-polygon || exit 0
+          git config --global user.name 'Git bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
