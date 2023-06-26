@@ -41,7 +41,7 @@ interface ContractCreateParams {
   libraries?: Array<{ factory: string, address: string }>;
 }
   
-export async function deployEnvironment(config: any, version: string, gnosisSafeAddress?: string, gnosisSafeServiceURL?: string) {
+export async function deployEnvironment(config: any, version: string, gnosisSafeAddress?: string, gnosisSafeServiceURL?: string): Promise<any> {
   console.log(`Deployment to ${config.name} has been started...`);
 
   for (const library of config.libraries) {
@@ -63,7 +63,7 @@ export async function deployEnvironment(config: any, version: string, gnosisSafe
       libraries.push(library);
     }
 
-    await deployContract({
+    contract.address = await deployContract({
       contractFactory: contract.factory,
       initializer: contract.initializer,
       initializerArgs: contract.initializerArgs,
@@ -77,6 +77,8 @@ export async function deployEnvironment(config: any, version: string, gnosisSafe
   }
 
   console.log(`Deployment to ${config.name} has been finished`);
+
+  return config;
 }
 
 export async function deployLibrary(libraryFactoryName: string): Promise<string> {
@@ -96,7 +98,7 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
   return library.address;
 }
 
-export async function deployContract(data: ContractDeployParams) {
+export async function deployContract(data: ContractDeployParams): Promise<string> {
   const { gnosisSafeAddress = '', gnosisSafeServiceURL = '', contractFactory, initializer, initializerArgs, useUUPS, version, description = '', libraries = [] } = data;
   let { proxyAddress } = data;
 
@@ -162,6 +164,8 @@ export async function deployContract(data: ContractDeployParams) {
     const tx = await contract.upgradeVersion(version, description);
     await tx.wait(1);
   }
+
+  return proxyAddress;
 }
 
 function getContractFactory(factoryName: string) {
