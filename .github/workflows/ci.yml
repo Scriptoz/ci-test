@@ -17,6 +17,9 @@ jobs:
       - name: PWD
         run: pwd
 
+      - name: LS
+        run: ls -ll
+
       - uses: './.github/workflows/prepare-node.yml'
 
       - name: Build
