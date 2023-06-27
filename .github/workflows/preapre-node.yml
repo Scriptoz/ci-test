@@ -6,8 +6,9 @@ on:
 
 jobs:
   prapare-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           # This version because of https://github.com/NomicFoundation/hardhat/issues/3877
