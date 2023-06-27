@@ -1,0 +1,24 @@
+---
+name: Prepare Node
+
+on:
+  workflow_call:
+
+jobs:
+  prapare-node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          # This version because of https://github.com/NomicFoundation/hardhat/issues/3877
+          node-version: '18.12.1'
+          cache: 'npm'
+
+      - uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install modules
+        run: npm install
