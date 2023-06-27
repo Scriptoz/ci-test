@@ -92,8 +92,9 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
   );
 
   const library = await libraryFactory.deploy();
-
   console.log(`Library ${libraryFactoryName} has been deployed to ${library.address}`);
+
+  await verify(library.address);
 
   return library.address;
 }
@@ -129,41 +130,37 @@ export async function deployContract(data: ContractDeployParams): Promise<string
   await sleep(1000);
   console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
   
-  for (const library of libraries) {
-    await verify(library.address);
-  }
-  
   await verify(proxyAddress);
 
-  console.log("- Set version -", version);
-  if (useMultiSig) {
-    const provider = new ethers.providers.JsonRpcProvider(
-      // @ts-ignore
-      network.config.url,
-      // @ts-ignore
-      { name: network.config.addressesSet, chainId: network.config.chainId! }
-    );
+  // console.log("- Set version -", version);
+  // if (useMultiSig) {
+  //   const provider = new ethers.providers.JsonRpcProvider(
+  //     // @ts-ignore
+  //     network.config.url,
+  //     // @ts-ignore
+  //     { name: network.config.addressesSet, chainId: network.config.chainId! }
+  //   );
 
-    const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
+  //   const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
 
-    const ContractFactoryNew = getContractFactory(contractFactory).connect(
-      proxyAddress,
-      deployer
-    );
+  //   const ContractFactoryNew = getContractFactory(contractFactory).connect(
+  //     proxyAddress,
+  //     deployer
+  //   );
 
-    await multisig(
-      gnosisSafeServiceURL,
-      ContractFactoryNew,
-      'upgradeVersion',
-      [version, description],
-      JSON.stringify(OwnableUpgradeableVersionableAbi),
-      signer
-    );
-  } else {
-    const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
-    const tx = await contract.upgradeVersion(version, description);
-    await tx.wait(1);
-  }
+  //   await multisig(
+  //     gnosisSafeServiceURL,
+  //     ContractFactoryNew,
+  //     'upgradeVersion',
+  //     [version, description],
+  //     JSON.stringify(OwnableUpgradeableVersionableAbi),
+  //     signer
+  //   );
+  // } else {
+  //   const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
+  //   const tx = await contract.upgradeVersion(version, description);
+  //   await tx.wait(1);
+  // }
 
   return proxyAddress;
 }

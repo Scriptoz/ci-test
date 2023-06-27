@@ -206,6 +206,9 @@ jobs:
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
           CONTRACT_VERSION: '${{ github.sha }}'
 
+      - name: Print
+        run: cat ci-artifacts1/test-bsc/test-bsc.yml
+
       - name: Upload deploy artifacts
         uses: actions/upload-artifact@v3
         with:
