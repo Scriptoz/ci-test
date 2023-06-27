@@ -216,7 +216,8 @@ jobs:
           cp .openzeppelin/* ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          cat ci-artifacts1/test-bsc/test-bsc.yml
+          ls -ll
+          cat test-bsc.yml
           git status
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
 
