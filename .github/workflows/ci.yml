@@ -193,9 +193,7 @@ jobs:
           mkdir .openzeppelin && cp ci-artifacts1/test-bsc/*.json .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
-        run: |
-          npm run deploy
-          cat ci-artifacts1/test-bsc/test-bsc.yml
+        run: npm run deploy
         env:
           DEPLOY_CONFIG_PATH: ci-artifacts1/test-bsc/test-bsc.yml
           HARDHAT_NETWORK: bsc
@@ -206,9 +204,6 @@ jobs:
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
           CONTRACT_VERSION: '${{ github.sha }}'
 
-      - name: Print
-        run: cat ci-artifacts1/test-bsc/test-bsc.yml
-
       - name: Upload deploy artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -216,17 +211,11 @@ jobs:
           path: |
             .openzeppelin/
 
-      - name: Print1
-        run: cat ci-artifacts1/test-bsc/test-bsc.yml
-
       - name: Push deploy artifacts
         run: |
-          cat ci-artifacts1/test-bsc/test-bsc.yml
-          cp .openzeppelin/*.json ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
+          mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/*.json ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
-          ls -ll
-          cat test-bsc.yml
           git status
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
 

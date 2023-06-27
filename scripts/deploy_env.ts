@@ -22,19 +22,9 @@ async function main() {
     throw new Error('"CONTRACT_VERSION" env is undeclared');
   }
 
-  console.log('DEPLOY_CONFIG_PATH', process.env.DEPLOY_CONFIG_PATH)
-  console.log('GNOSIS_SAFE_ADDRESS', process.env.GNOSIS_SAFE_ADDRESS)
-  console.log('GNOSIS_SAFE_SERVICE_URL', process.env.GNOSIS_SAFE_SERVICE_URL)
-  
-  const configAfterDeploy = await deployEnvironment(config, version, process.env.GNOSIS_SAFE_ADDRESS, process.env.GNOSIS_SAFE_SERVICE_URL);
-  console.log(configAfterDeploy)
+  await deployEnvironment(config, version, process.env.GNOSIS_SAFE_ADDRESS, process.env.GNOSIS_SAFE_SERVICE_URL);
 
-  fs.writeFileSync(configPath, yaml.dump(configAfterDeploy));
-
-  // const ws = fs.createWriteStream(configPath, 'utf8');
-  // ws.end(yaml.dump(configAfterDeploy));
-
-  console.log('saved conf', yaml.load(fs.readFileSync(configPath, 'utf8')));
+  fs.writeFileSync(configPath, yaml.dump(config));
 }
 
 // We recommend this pattern to be able to use async/await everywhere

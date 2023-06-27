@@ -41,7 +41,7 @@ interface ContractCreateParams {
   libraries?: Array<{ factory: string, address: string }>;
 }
   
-export async function deployEnvironment(config: any, version: string, gnosisSafeAddress?: string, gnosisSafeServiceURL?: string): Promise<any> {
+export async function deployEnvironment(config: any, version: string, gnosisSafeAddress?: string, gnosisSafeServiceURL?: string) {
   console.log(`Deployment to ${config.name} has been started...`);
 
   for (const library of config.libraries) {
@@ -77,8 +77,6 @@ export async function deployEnvironment(config: any, version: string, gnosisSafe
   }
 
   console.log(`Deployment to ${config.name} has been finished`);
-
-  return config;
 }
 
 export async function deployLibrary(libraryFactoryName: string): Promise<string> {
@@ -132,35 +130,35 @@ export async function deployContract(data: ContractDeployParams): Promise<string
   
   await verify(proxyAddress);
 
-  // console.log("- Set version -", version);
-  // if (useMultiSig) {
-  //   const provider = new ethers.providers.JsonRpcProvider(
-  //     // @ts-ignore
-  //     network.config.url,
-  //     // @ts-ignore
-  //     { name: network.config.addressesSet, chainId: network.config.chainId! }
-  //   );
+  console.log("- Set version -", version);
+  if (useMultiSig) {
+    const provider = new ethers.providers.JsonRpcProvider(
+      // @ts-ignore
+      network.config.url,
+      // @ts-ignore
+      { name: network.config.addressesSet, chainId: network.config.chainId! }
+    );
 
-  //   const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
+    const signer = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY!, provider);
 
-  //   const ContractFactoryNew = getContractFactory(contractFactory).connect(
-  //     proxyAddress,
-  //     deployer
-  //   );
+    const ContractFactoryNew = getContractFactory(contractFactory).connect(
+      proxyAddress,
+      deployer
+    );
 
-  //   await multisig(
-  //     gnosisSafeServiceURL,
-  //     ContractFactoryNew,
-  //     'upgradeVersion',
-  //     [version, description],
-  //     JSON.stringify(OwnableUpgradeableVersionableAbi),
-  //     signer
-  //   );
-  // } else {
-  //   const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
-  //   const tx = await contract.upgradeVersion(version, description);
-  //   await tx.wait(1);
-  // }
+    await multisig(
+      gnosisSafeServiceURL,
+      ContractFactoryNew,
+      'upgradeVersion',
+      [version, description],
+      JSON.stringify(OwnableUpgradeableVersionableAbi),
+      signer
+    );
+  } else {
+    const contract = getContractFactory(contractFactory).connect(proxyAddress, deployer);
+    const tx = await contract.upgradeVersion(version, description);
+    await tx.wait(1);
+  }
 
   return proxyAddress;
 }
