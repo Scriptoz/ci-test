@@ -14,12 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: PWD
-        run: pwd
-
-      - name: LS
-        run: ls -la ./.github/actions
-
       - uses: './.github/actions/prepare-node'
 
       - name: Build
@@ -64,18 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Forge needs node_modules/
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.12.1'
-
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install modules
-        run: npm install
+      - uses: './.github/actions/prepare-node'
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
@@ -100,17 +83,8 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.12.1'
 
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-  
-      - name: Install modules
-        run: npm install
+      - uses: './.github/actions/prepare-node'
 
       - name: Lint
         run: npm run lint:check
@@ -124,17 +98,8 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.12.1'
-
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-  
-      - name: Install modules
-        run: npm install
+      
+      - uses: './.github/actions/prepare-node'
 
       - name: Load build artifacts
         uses: actions/download-artifact@v3
@@ -143,32 +108,6 @@ jobs:
 
       - name: Check sizes
         run: npm run check-size
-
-
-  # approve-test-bsc:
-  #   name: Approve Test BSC
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - test-hardhat
-  #     - test-forge
-  #     - lint
-  #     - contracts-size
-  #   steps:
-  #     - name: manual approve
-  #       run: echo "Manually approved"
-
-
-  # approve-test-polygon:
-  #   name: Approve Test Polygon
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - test-hardhat
-  #     - test-forge
-  #     - lint
-  #     - contracts-size
-  #   steps:
-  #     - name: manual approve
-  #       run: echo "Manually approved"
 
 
   deploy-test-bsc:
@@ -185,104 +124,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - uses: './.github/actions/prepare-node'
+
+      - uses: './.github/actions/deploy'
         with:
-          node-version: '18.12.1'
-
-      - name: Install modules
-        run: npm install
-
-      - name: Load build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Restore deploy artifacts
-        run: |
-          git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
-          mkdir .openzeppelin && cp ci-artifacts1/test-bsc/*.json .openzeppelin/ || echo "Artifacts were not found"
-
-      - name: Deploy
-        run: npm run deploy
-        env:
-          DEPLOY_CONFIG_PATH: ci-artifacts1/test-bsc/test-bsc.yml
+          ENV_NAME: test-bsc
+          CI_TOKEN: '${{ secrets.CI_TOKEN1 }}'
           HARDHAT_NETWORK: bsc
           MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
           DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
           GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
-          CONTRACT_VERSION: '${{ github.sha }}'
-
-      - name: Upload deploy artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: deploy-artifacts
-          path: |
-            .openzeppelin/
-
-      - name: Push deploy artifacts
-        run: |
-          mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/*.json ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
-          git config --global user.name 'Git bot'
-          git config --global user.email 'bot@noreply.github.com'
-          git status
-          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
-
-
-  deploy-test-polygon:
-    name: Deploy Test Polygon
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - test-hardhat
-      - test-forge
-      - lint
-      - contracts-size
-    environment: test-polygon
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.12.1'
-
-      - name: Install modules
-        run: npm install
-
-      - name: Load build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      - name: Restore deploy artifacts
-        run: |
-          git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
-          mkdir .openzeppelin && cp ci-artifacts1/test-polygon/* .openzeppelin/ || echo "Artifacts were not found"
-
-      - name: Deploy
-        run: npm run deploy
-        env:
-          DEPLOY_CONFIG_PATH: environments/test-polygon.yml
-          HARDHAT_NETWORK: polygon
-          MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
-          DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
-          ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
-          GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
-          GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
-          CONTRACT_VERSION: '${{ github.sha }}'
-
-      - name: Upload deploy artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: deploy-artifacts
-          path: |
-            .openzeppelin/
-
-      - name: Push deploy artifacts
-        run: |
-          mkdir -p ci-artifacts1/test-polygon/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-polygon || exit 0
-          git config --global user.name 'Git bot'
-          git config --global user.email 'bot@noreply.github.com'
-          git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
+          # CONTRACT_VERSION: '${{ github.sha }}'
