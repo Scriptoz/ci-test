@@ -190,7 +190,7 @@ jobs:
       - name: Restore deploy artifacts
         run: |
           git clone https://Scriptoz:${{secrets.CI_TOKEN1}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
-          mkdir .openzeppelin && cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
+          mkdir .openzeppelin && cp ci-artifacts1/test-bsc/*.json .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
         run: |
@@ -222,7 +222,7 @@ jobs:
       - name: Push deploy artifacts
         run: |
           cat ci-artifacts1/test-bsc/test-bsc.yml
-          cp .openzeppelin/* ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
+          cp .openzeppelin/*.json ci-artifacts1/test-bsc/ && cd ci-artifacts1/test-bsc
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
           ls -ll
