@@ -193,7 +193,9 @@ jobs:
           mkdir .openzeppelin && cp ci-artifacts1/test-bsc/* .openzeppelin/ || echo "Artifacts were not found"
 
       - name: Deploy
-        run: npm run deploy
+        run: |
+          npm run deploy
+          cat ci-artifacts1/test-bsc/test-bsc.yml
         env:
           DEPLOY_CONFIG_PATH: ci-artifacts1/test-bsc/test-bsc.yml
           HARDHAT_NETWORK: bsc
