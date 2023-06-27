@@ -1,10 +1,7 @@
 ---
 name: Prepare Node
 
-on:
-  workflow_call:
-
-jobs:
+runs:
   prapare-node:
     runs-on: ubuntu-latest
     timeout-minutes: 10

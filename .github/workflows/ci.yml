@@ -18,9 +18,9 @@ jobs:
         run: pwd
 
       - name: LS
-        run: ls -la ./.github/workflows
+        run: ls -la ./.github/actions
 
-      - uses: './.github/workflows/prepare-node.yml'
+      - uses: './.github/actions/prepare-node/action.yml'
 
       - name: Build
         run: npm run build
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: './.github/workflows/prepare-node.yml'
+      - uses: './.github/actions/prepare-node/action.yml'
 
       - name: Load build artifacts
         uses: actions/download-artifact@v3
