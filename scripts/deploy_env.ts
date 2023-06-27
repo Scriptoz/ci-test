@@ -26,6 +26,7 @@ async function main() {
   console.log('GNOSIS_SAFE_SERVICE_URL', process.env.GNOSIS_SAFE_SERVICE_URL)
   
   const configAfterDeploy = await deployEnvironment(config, version, process.env.GNOSIS_SAFE_ADDRESS, process.env.GNOSIS_SAFE_SERVICE_URL);
+  console.log(configAfterDeploy)
 
   const ws = fs.createWriteStream(configPath, 'utf8');
   ws.end(yaml.dump(configAfterDeploy));

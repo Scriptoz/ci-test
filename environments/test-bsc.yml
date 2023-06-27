@@ -5,8 +5,8 @@ libraries:
 contracts:
   - factory: Lock
     description: The purpose of a contract
-    address: '0x9E53d8617CCa45c74b01457385466A677f4d8957'
-    initializer: '__Lock_init'
+    address: '0x69ee853EC6EBb4F67247D82B3F4764784Ac4BC26'
+    initializer: __Lock_init
     initializerArgs: []
     libraries:
       - TestLib

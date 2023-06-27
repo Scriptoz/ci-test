@@ -213,9 +213,10 @@ jobs:
 
       - name: Push deploy artifacts
         run: |
-          mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc || exit 0
+          mkdir -p ci-artifacts1/test-bsc/ && cp .openzeppelin/* $_ && cd ci-artifacts1/test-bsc
           git config --global user.name 'Git bot'
           git config --global user.email 'bot@noreply.github.com'
+          git status
           git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
 
 
