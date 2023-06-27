@@ -22,6 +22,7 @@ async function main() {
     throw new Error('"CONTRACT_VERSION" env is undeclared');
   }
 
+  console.log('DEPLOY_CONFIG_PATH', process.env.DEPLOY_CONFIG_PATH)
   console.log('GNOSIS_SAFE_ADDRESS', process.env.GNOSIS_SAFE_ADDRESS)
   console.log('GNOSIS_SAFE_SERVICE_URL', process.env.GNOSIS_SAFE_SERVICE_URL)
   
