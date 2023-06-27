@@ -12,6 +12,7 @@ runs:
 
     - name: PWD
       run: pwd
+      shell: bash
 
     - uses: actions/cache@v3
       with:
