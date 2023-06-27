@@ -2,20 +2,17 @@
 name: Prepare Node
 
 runs:
-  prapare-node:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/setup-node@v3
-        with:
-          # This version because of https://github.com/NomicFoundation/hardhat/issues/3877
-          node-version: '18.12.1'
-          cache: 'npm'
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        # This version because of https://github.com/NomicFoundation/hardhat/issues/3877
+        node-version: '18.12.1'
+        cache: 'npm'
 
-      - uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+    - uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install modules
-        run: npm install
+    - name: Install modules
+      run: npm install
