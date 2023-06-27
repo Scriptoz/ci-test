@@ -28,8 +28,12 @@ async function main() {
   const configAfterDeploy = await deployEnvironment(config, version, process.env.GNOSIS_SAFE_ADDRESS, process.env.GNOSIS_SAFE_SERVICE_URL);
   console.log(configAfterDeploy)
 
-  const ws = fs.createWriteStream(configPath, 'utf8');
-  ws.end(yaml.dump(configAfterDeploy));
+  fs.writeFileSync(configPath, yaml.dump(configAfterDeploy));
+
+  // const ws = fs.createWriteStream(configPath, 'utf8');
+  // ws.end(yaml.dump(configAfterDeploy));
+
+  console.log('saved conf', yaml.load(fs.readFileSync(configPath, 'utf8')));
 }
 
 // We recommend this pattern to be able to use async/await everywhere
