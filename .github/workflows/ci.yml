@@ -20,7 +20,7 @@ jobs:
       - name: LS
         run: ls -la ./.github/actions
 
-      - uses: './.github/actions/prepare-node/action.yml'
+      - uses: './.github/actions/prepare-node'
 
       - name: Build
         run: npm run build
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: './.github/actions/prepare-node/action.yml'
+      - uses: './.github/actions/prepare-node'
 
       - name: Load build artifacts
         uses: actions/download-artifact@v3
