@@ -92,8 +92,6 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
   const library = await libraryFactory.deploy();
   console.log(`Library ${libraryFactoryName} has been deployed to ${library.address}`);
 
-  await verify(library.address);
-
   return library.address;
 }
 
@@ -128,6 +126,10 @@ export async function deployContract(data: ContractDeployParams): Promise<string
   await sleep(1000);
   console.log(">>>>>>>>>>>> Verification >>>>>>>>>>>>");
   
+  for (const library of libraries) {
+    await verify(library.address);
+  }
+
   await verify(proxyAddress);
 
   console.log("- Set version -", version);
