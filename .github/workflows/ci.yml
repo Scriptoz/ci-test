@@ -143,7 +143,7 @@ jobs:
   
   deploy-staging-bsc:
     name: Deploy Staging BSC
-    if: ${{ github.ref == 'refs/heads/test-s' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
@@ -181,7 +181,7 @@ jobs:
       - test-forge
       - lint
       - contracts-size
-    environment: staging-bsc
+    environment: production-bsc
 
     steps:
       - uses: actions/checkout@v3
@@ -190,7 +190,7 @@ jobs:
 
       - uses: './.github/actions/deploy'
         with:
-          ENV_NAME: staging-bsc
+          ENV_NAME: production-bsc
           CI_TOKEN: '${{ secrets.CI_TOKEN1 }}'
           HARDHAT_NETWORK: bsc
           MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
