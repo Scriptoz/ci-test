@@ -24,7 +24,7 @@ runs:
   steps:
     - uses: trstringer/manual-approval@v1
       with:
-        secret: '${{ inputs.CI_TOKEN }}'
+        secret: ${{ inputs.CI_TOKEN }}
         approvers: Scriptoz
         minimum-approvals: 1
         issue-title: "Deploying ${{ github.sha }} to ${{ inputs.ENV_NAME }}"
