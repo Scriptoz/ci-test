@@ -121,6 +121,7 @@ jobs:
       - test-forge
       - lint
       - contracts-size
+    environment: test-bsc
     steps:
       - uses: actions/checkout@v3
 
@@ -134,7 +135,6 @@ jobs:
           ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
           GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
           GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
-          # CONTRACT_VERSION: '${{ github.sha }}'
 
   
   deploy-staging-bsc:
@@ -149,8 +149,6 @@ jobs:
       - contracts-size
     steps:
       - uses: actions/checkout@v3
-
-      - uses: './.github/actions/prepare-node'
 
       - uses: './.github/actions/deploy'
         with:
@@ -176,8 +174,6 @@ jobs:
       - contracts-size
     steps:
       - uses: actions/checkout@v3
-
-      - uses: './.github/actions/prepare-node'
 
       - uses: './.github/actions/deploy'
         with:

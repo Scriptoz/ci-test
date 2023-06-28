@@ -92,6 +92,8 @@ export async function deployLibrary(libraryFactoryName: string): Promise<string>
   const library = await libraryFactory.deploy();
   console.log(`Library ${libraryFactoryName} has been deployed to ${library.address}`);
 
+  await verify(library.address);
+
   return library.address;
 }
 
