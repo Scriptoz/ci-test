@@ -1,5 +1,5 @@
 ---
-name: CI
+name: Deploy Staging
 
 on:
   workflow_run:
