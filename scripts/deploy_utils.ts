@@ -269,11 +269,15 @@ async function upgradeContract(data: ContractDeployParams) {
       proxyAddress
     );
 
-    if (contractImpl === currentImpl) {
-      return;
+    for (const library of libraries) {
+      await verify(library.address);
     }
 
     await verify(contractImpl);
+
+    if (contractImpl === currentImpl) {
+      return;
+    }
 
     if (useUUPS) {
       // Factory should be changed for the contract
