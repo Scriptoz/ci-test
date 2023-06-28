@@ -1,0 +1,32 @@
+---
+name: CI
+
+on:
+  workflow_run:
+    workflows: CI
+    branches: '**'
+    types: completed
+    
+jobs:
+  deploy-test-bsc:
+    name: Deploy Test BSC
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: test-bsc
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: './.github/actions/prepare-node'
+
+      - uses: './.github/actions/deploy'
+        with:
+          ENV_NAME: test-bsc
+          CI_TOKEN: '${{ secrets.CI_TOKEN1 }}'
+          HARDHAT_NETWORK: bsc
+          MAINNET_PROVIDER_URL: '${{ vars.MAINNET_PROVIDER_URL }}'
+          DEPLOYER_PRIVATE_KEY: '${{ secrets.DEPLOYER_PRIVATE_KEY }}'
+          ETHERSCAN_APIKEY: '${{ secrets.ETHERSCAN_APIKEY }}'
+          GNOSIS_SAFE_ADDRESS: '${{ vars.GNOSIS_SAFE_ADDRESS }}'
+          GNOSIS_SAFE_SERVICE_URL: '${{ vars.GNOSIS_SAFE_SERVICE_URL }}'
