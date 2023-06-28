@@ -37,6 +37,8 @@ runs:
       run: echo "Was approved"
       shell: bash
 
+    - uses: './.github/actions/prepare-node'
+
     # - name: Load build artifacts
     #   uses: actions/download-artifact@v3
     #   with:
