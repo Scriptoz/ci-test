@@ -271,6 +271,8 @@ async function upgradeContract(data: ContractDeployParams) {
       return;
     }
 
+    await verify(contractImpl);
+
     if (useUUPS) {
       // Factory should be changed for the contract
       const ContractFactoryNew = getContractFactory(contractFactory).connect(
