@@ -22,42 +22,57 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Load build artifacts
-      uses: actions/download-artifact@v3
+    - uses: trstringer/manual-approval@v1
       with:
-        name: build-artifacts
+        secret: '${{ inputs.CI_TOKEN }}'
+        approvers: Scriptoz
+        minimum-approvals: 1
+        issue-title: "Deploying ${{ github.sha }} to ${{ inputs.ENV_NAME }}"
+        issue-body: "Please approve or deny the deployment of ${{ github.sha }} to ${{ inputs.ENV_NAME }}"
+        exclude-workflow-initiator-as-approver: false
+        additional-approved-words: ''
+        additional-denied-words: ''
 
-    - name: Restore deploy artifacts
-      run: |
-        git clone https://Scriptoz:${{inputs.CI_TOKEN}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
-        mkdir .openzeppelin && cp ci-artifacts1/${{ inputs.ENV_NAME }}/*.json .openzeppelin/ || echo "Artifacts were not found"
+    - name: After approve
+      run: echo "Was approved"
       shell: bash
 
-    - name: Deploy
-      run: npm run deploy
-      env:
-        DEPLOY_CONFIG_PATH: ci-artifacts1/${{ inputs.ENV_NAME }}/${{ inputs.ENV_NAME }}.yml
-        HARDHAT_NETWORK: '${{ inputs.HARDHAT_NETWORK }}'
-        MAINNET_PROVIDER_URL: '${{ inputs.MAINNET_PROVIDER_URL }}'
-        DEPLOYER_PRIVATE_KEY: '${{ inputs.DEPLOYER_PRIVATE_KEY }}'
-        ETHERSCAN_APIKEY: '${{ inputs.ETHERSCAN_APIKEY }}'
-        GNOSIS_SAFE_ADDRESS: '${{ inputs.GNOSIS_SAFE_ADDRESS }}'
-        GNOSIS_SAFE_SERVICE_URL: '${{ inputs.GNOSIS_SAFE_SERVICE_URL }}'
-        CONTRACT_VERSION: '${{ github.sha }}'
-      shell: bash
+    # - name: Load build artifacts
+    #   uses: actions/download-artifact@v3
+    #   with:
+    #     name: build-artifacts
 
-    - name: Upload deploy artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: deploy-artifacts
-        path: |
-          .openzeppelin/
+    # - name: Restore deploy artifacts
+    #   run: |
+    #     git clone https://Scriptoz:${{inputs.CI_TOKEN}}@github.com/Scriptoz/ci-artifacts ci-artifacts1
+    #     mkdir .openzeppelin && cp ci-artifacts1/${{ inputs.ENV_NAME }}/*.json .openzeppelin/ || echo "Artifacts were not found"
+    #   shell: bash
 
-    - name: Push deploy artifacts
-      run: |
-        mkdir -p ci-artifacts1/${{ inputs.ENV_NAME }}/ && cp .openzeppelin/*.json ci-artifacts1/${{ inputs.ENV_NAME }}/ && cd ci-artifacts1/${{ inputs.ENV_NAME }}
-        git config --global user.name 'Git bot'
-        git config --global user.email 'bot@noreply.github.com'
-        git status
-        git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
-      shell: bash
+    # - name: Deploy
+    #   run: npm run deploy
+    #   env:
+    #     DEPLOY_CONFIG_PATH: ci-artifacts1/${{ inputs.ENV_NAME }}/${{ inputs.ENV_NAME }}.yml
+    #     HARDHAT_NETWORK: '${{ inputs.HARDHAT_NETWORK }}'
+    #     MAINNET_PROVIDER_URL: '${{ inputs.MAINNET_PROVIDER_URL }}'
+    #     DEPLOYER_PRIVATE_KEY: '${{ inputs.DEPLOYER_PRIVATE_KEY }}'
+    #     ETHERSCAN_APIKEY: '${{ inputs.ETHERSCAN_APIKEY }}'
+    #     GNOSIS_SAFE_ADDRESS: '${{ inputs.GNOSIS_SAFE_ADDRESS }}'
+    #     GNOSIS_SAFE_SERVICE_URL: '${{ inputs.GNOSIS_SAFE_SERVICE_URL }}'
+    #     CONTRACT_VERSION: '${{ github.sha }}'
+    #   shell: bash
+
+    # - name: Upload deploy artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: deploy-artifacts
+    #     path: |
+    #       .openzeppelin/
+
+    # - name: Push deploy artifacts
+    #   run: |
+    #     mkdir -p ci-artifacts1/${{ inputs.ENV_NAME }}/ && cp .openzeppelin/*.json ci-artifacts1/${{ inputs.ENV_NAME }}/ && cd ci-artifacts1/${{ inputs.ENV_NAME }}
+    #     git config --global user.name 'Git bot'
+    #     git config --global user.email 'bot@noreply.github.com'
+    #     git status
+    #     git add . && git commit -m"Auto updated deploy artifacts" && git push || echo "No changes to commit"
+    #   shell: bash
