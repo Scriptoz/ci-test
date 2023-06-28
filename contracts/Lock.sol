@@ -32,7 +32,7 @@ contract Lock is OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function test2() public pure returns (uint256) {
-        return 777;
+        return 7777;
     }
 
     function hello() public pure returns (string memory) {
